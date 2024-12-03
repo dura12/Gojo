@@ -58,7 +58,9 @@ export const login = async (req, res) => {
 
         const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
         const token = jwt.sign(
-            { id: existingUser.id },
+            { id: existingUser.id,
+            isAdmin: true
+             },
             process.env.JWT_SECRET_KEY,
             { expiresIn: maxAge } // Token expires in 7 days
         );
@@ -66,8 +68,6 @@ export const login = async (req, res) => {
         res.cookie("auth_token", token, {
             httpOnly: true,
             maxAge,
-            secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-            sameSite: "strict",
         });
 
         const { password: _, ...userWithoutPassword } = existingUser;
@@ -75,6 +75,7 @@ export const login = async (req, res) => {
             message: "Login successful",
             user: userWithoutPassword,
         });
+        console.log("dfghjhgf" , res , "this is ledddd")
     } catch (error) {
         console.error("Error during login:", error);
         res.status(500).json({
